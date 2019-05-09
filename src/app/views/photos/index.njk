@@ -1,0 +1,75 @@
+{% extends "_layouts/default.njk" %}
+
+{% block body %}
+  {% include "_partials/header.njk" %}
+
+  {% include "_partials/aside.njk" %}
+
+  <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h1 class="h2">Fotos</h1>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <div class="card">
+          <div class="card-header">
+            Informações do álbum
+          </div>
+          <div class="card-body">
+            <strong>Título:</strong> <p>{{ photos[0].album.title }}</p>
+            <strong>Descrição:</strong> <p>{{ photos[0].album.description.substring(0, 40) }}</p>
+            <strong>Criado em:</strong> <p>{{ photos[0].album.createdAt | date('DD/MM/YYYY') }} {{ photos[0].album.createdAt.getHours() }}:{{ photos[0].album.createdAt.getMinutes() }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPhotosModal">
+          <i class="fa fa-plus"></i> Adicionar fotos
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+    {% for photo in photos %}
+      <div class="col-md-3 mb-3">
+        <div class="card">
+          <img src="/files/{{ photo.name }}" class="card-img-top" />
+          <div class="card-body">
+            <h5 class="card-title">{{ photo.original_name }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ photo.createdAt | date('DD/MM/YYYY') }} {{ photo.createdAt.getHours() }}:{{ photo.createdAt.getMinutes() }}</h6>
+            <a href="/albums/{{ photo.album_id }}/photos/{{ photo.id }}/del" class="btn btn-danger mt-4">Excluir</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+  </main>
+
+  <div class="modal fade" id="addPhotosModal" tabindex="-1" role="dialog" aria-labelledby="addPhotosModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addPhotosModalLabel">Adicionar fotos ao álbum</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="/albums/{{ album_id }}/photos" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+              <label for="photos">Selecione as fotos</label>
+              <input type="file" class="form-control-file" name="photos" id="photos" multiple="true" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
